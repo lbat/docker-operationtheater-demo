@@ -1,0 +1,76 @@
+CREATE DATABASE  IF NOT EXISTS `openmrs` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `openmrs`;
+-- MySQL dump 10.13  Distrib 5.5.38, for debian-linux-gnu (x86_64)
+--
+-- Host: 127.0.0.1    Database: openmrs
+-- ------------------------------------------------------
+-- Server version	5.5.38-0ubuntu0.14.04.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `system_id` varchar(50) NOT NULL DEFAULT '',
+  `username` varchar(50) DEFAULT NULL,
+  `password` varchar(128) DEFAULT NULL,
+  `salt` varchar(128) DEFAULT NULL,
+  `secret_question` varchar(255) DEFAULT NULL,
+  `secret_answer` varchar(255) DEFAULT NULL,
+  `creator` int(11) NOT NULL DEFAULT '0',
+  `date_created` datetime NOT NULL,
+  `changed_by` int(11) DEFAULT NULL,
+  `date_changed` datetime DEFAULT NULL,
+  `person_id` int(11) NOT NULL,
+  `retired` tinyint(1) NOT NULL DEFAULT '0',
+  `retired_by` int(11) DEFAULT NULL,
+  `date_retired` datetime DEFAULT NULL,
+  `retire_reason` varchar(255) DEFAULT NULL,
+  `uuid` char(38) NOT NULL,
+  PRIMARY KEY (`user_id`),
+  KEY `user_who_changed_user` (`changed_by`),
+  KEY `user_creator` (`creator`),
+  KEY `user_who_retired_this_user` (`retired_by`),
+  KEY `person_id_for_user` (`person_id`),
+  CONSTRAINT `person_id_for_user` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`),
+  CONSTRAINT `user_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `user_who_changed_user` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `user_who_retired_this_user` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'admin','','7ca7852801bbffb72177e9f56f7f1b3389b5a307d04e19a3bc64021c00f8a2b1e009611332878652135bffc7da809f529383ab3a734cd1c078c208310ef48a9e','9166a2a37ec3e323c6f95cb8fc8e9fcf3c0cfee3797b9dfbcb1bcfbe6a42de3689161c9c0eab44d4be9de1c6e61d00ad73c791ac1857c9e61187f4b46b850952',NULL,NULL,1,'2005-01-01 00:00:00',1,'2014-06-12 15:08:17',1,0,NULL,NULL,NULL,'8d668501-f232-11e3-bbd8-e03f49163b83'),(2,'daemon','daemon',NULL,NULL,NULL,NULL,1,'2010-04-26 13:25:00',NULL,NULL,1,0,NULL,NULL,NULL,'A4F30A1B-5EB9-11DF-A648-37A07F9C90FB'),(3,'3-4','clerk','b83f51fe566e5e74f88409c0617301f490f59c32288a80d4a8b0c885e147d7dfe189cea0b9946c7498625abb46f11194a01ebce99e3eeb293004025a88d38556','240fc2ca93ef6c0921f1a4e071321db8240fa2e89639de8c54c1c42e39c04ead250267c447a160264b984e627968d86cc1b45ae267dfba42b32e11ddf9902726',NULL,NULL,2,'2014-06-16 10:20:07',2,'2014-06-16 10:20:07',3,0,NULL,NULL,NULL,'4882dd60-0508-11e3-8ffd-0800200c9a66'),(4,'4-2','nurse','456410eab9f872c6b51e68f2989c2b23c92f641cc71196edfd79d2f8660628df86d075a9fbea70a7b6044d1b68f180a2c2759f5238595e033186727ae6966e96','92cae1c490c851655fec5da9cb1bb55b626e55643a2f7ddfdd788c6393e5703e451f0086874f8b17c57be37ad72b90987df3fea0074e334899de0e1ad63b2e58',NULL,NULL,2,'2014-06-16 10:20:28',2,'2014-06-16 10:20:28',4,0,NULL,NULL,NULL,'564b2790-0508-11e3-8ffd-0800200c9a66'),(5,'5-9','doctor','d24b4e113a3841452de7df15f535bb3fbaa3e34d1d321d2b78778a96d6ee4467f479cb036572648a4a77b4135128dcea41bcd205922e7d55a8a101c623e23f98','80158061ab379186381478fdb5a7944c5249d82f1daeb1cae13480665ee330abe9a1dea637da9b7b2349536a490cbace3b290d6c9eff45451597cd407b7ce1ba',NULL,NULL,2,'2014-06-16 10:20:29',2,'2014-06-16 10:20:29',5,0,NULL,NULL,NULL,'67bfd7f0-0508-11e3-8ffd-0800200c9a66'),(6,'6-7','scheduler','2859e12c3423a550564353990aaa1324da5ce28ca7517c38c5e72d679e6cde68ff63b147dbdb053e41f8baa6d597e3378fc6c9c5ae8cf372be84a9523cad51e3','ce195a4f431e1248a1bb4e1d602e843502bc41768ab582f9dcf6ab8d13809619873004945ab9b429bbc82680f65cd979e6b3ff36d3a0c36dbad2e1d340547d0e',NULL,NULL,2,'2014-06-16 10:20:30',2,'2014-06-16 10:20:30',1,0,NULL,NULL,NULL,'0a3493e8-21f8-11e3-8ad1-1b02b898d14d');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2014-08-14 17:59:28
